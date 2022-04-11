@@ -8,5 +8,6 @@ version '1.0.0'
 client_scripts {
   'scripts/client/utils.js',
   'scripts/client/main.js',
-  'scripts/client/taxi.js'
+  'scripts/client/taxi.js',
+  'scripts/client/follow.js'
 }
