@@ -6,9 +6,9 @@ const driverPedModels = [
   'a_m_y_stlat_01'
 ]
 
-const vehicleHash = 'TAXI';
-const drivingStyle = 787245;
-const maxSpeed = 22;
+const vehicleHash = 'TAXI'; // https://wiki.gtanet.work/index.php?title=Vehicle_Models
+const drivingStyle = 787245; // https://vespura.com/fivem/drivingstyle/
+const maximumSpeed = 22; // meters per second
 
 RegisterCommand('taxi', async () => {
   let estimatedArrivalInMinutes = 0;
@@ -30,7 +30,7 @@ RegisterCommand('taxi', async () => {
   const [waypointX, waypointY] = GetBlipInfoIdCoord(waypointBlip);
   const waypointZ = GetHeightmapBottomZForPosition(waypointX, waypointY);
 
-  const [vehicle, driver] = await generateVehicle('TAXI', [x, y, z], 0, 'a_m_m_fatlatin_01');
+  const [vehicle, driver] = await generateVehicle(vehicleHash, [x, y, z], 0, driverPedModels[Math.floor(Math.random() * driverPedModels.length)]);
 
   const playerSeat = GetVehicleModelNumberOfSeats(vehicleHash) - 2; // Get the last available seat, minus the driver seat.
 
