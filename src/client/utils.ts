@@ -1,4 +1,4 @@
-export function Delay (ms: number) {
+export async function Delay (ms: number) {
   new Promise(resolve => setTimeout(resolve, ms));
 }
 export function errorMsg (msg: string) {
