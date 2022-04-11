@@ -21,7 +21,7 @@ successMsg = (msg) => emit('chat:addMessage', {
   color: [0, 255, 0]
 });
 
-const positionVariation = 30;
+const positionVariance = 30;
 
 AddRelationshipGroup('WSKY_TAXI_DRIVER');
 SetRelationshipBetweenGroups(0, GetHashKey('WSKY_TAXI_DRIVER'), GetHashKey('PLAYER'));
