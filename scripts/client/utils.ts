@@ -21,6 +21,8 @@ const successMsg = (msg: string) => emit('chat:addMessage', {
   color: [0, 255, 0]
 });
 
+const positionVariance: number = 30; // meters
+
 // Setup the relationship group for the taxi driver.
 AddRelationshipGroup('WSKY_TAXI_DRIVER');
 
@@ -55,4 +57,34 @@ async function generateVehicle(vehicleModel: string, position: [x: number, y: nu
   }
 
   return driver ? [ vehicle, driver ] : [ vehicle ];
+}
+
+function getDistance(location1: [x: number, y: number, z: number], location2: [x: number, y: number, z: number]) {
+  const [ x1, y1, z1 ] = location1;
+  const [ x2, y2, z2 ] = location2;
+
+  return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2) + Math.pow(z1 - z2, 2));
+}
+
+function hasVehicleArrivedAtDestination(vehicle: number, destination: [x: number, y: number, z: number]) {
+  const [vehicleX, vehicleY, vehicleZ] = GetEntityCoords(vehicle);
+  const [destinationX, destinationY, destinationZ] = destination;
+  const distance = getDistance({ x: vehicleX, y: vehicleY, z: vehicleZ }, { x: destinationX, y: destinationY, z: destinationZ });
+  return distance <= positionVariance;
+}
+
+function getLocationFromCoords(x: number, y: number, z: number) {
+  const zoneId: string = GetNameOfZone(x, y, z);
+  const zoneName: string = zoneId ? GetLabelText(zoneId) : null;
+
+  const [streetNameHash]: string = GetStreetNameAtCoord(x, y, z);
+  const streetName: string = GetStreetNameFromHashKey(streetNameHash);
+
+  let location: string = 'your destination';
+
+  if (streetName) location = streetName;
+  if (streetName && zoneName) location = `${streetName}, ${zoneName}`;
+  else if (zoneName) location = zoneName;
+
+  return location;
 }
