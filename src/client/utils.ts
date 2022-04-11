@@ -45,14 +45,18 @@ export async function generateVehicle(vehicleModel: string, position: [x: number
   // Load the vehicle model, and wait until it's loaded.
   RequestModel(vehicleModel);
   console.log('step 2');
-  while (!HasModelLoaded(vehicleModel)) await Delay(500);
+  do {
+    await Delay(500);
+  } while (!HasModelLoaded(vehicleModel));
   console.log('step 3');
 
   // If a ped model is specified, load it.
   if (pedModel) {
     RequestModel(pedModel);
     console.log('step 3.1');
-    while (!HasModelLoaded(pedModel)) await Delay(500);
+    do {
+      await Delay(500);
+    } while (!HasModelLoaded(pedModel));
     console.log('step 3.2');
   }
 

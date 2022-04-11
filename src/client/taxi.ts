@@ -50,10 +50,9 @@ RegisterCommand('taxi', async () => {
 
   console.log('step 6');
 
-  while (!utils.hasVehicleArrivedAtDestination(vehicle, [ waypointX, waypointY, waypointZ ]) && IsPedSittingInVehicle(player, vehicle) && IsPedSittingInVehicle(driver, vehicle)) {
-
+  do {
     console.log('step 7');
-    
+
     const vehicleSpeed: number = Math.max(maximumSpeed * 0.5, GetEntitySpeed(vehicle)); // meters per second
     const [vehicleX, vehicleY, vehicleZ] = GetEntityCoords(vehicle, true);
     const distanceRemaining: number = CalculateTravelDistanceBetweenPoints(waypointX, waypointY, waypointZ, vehicleX, vehicleY, vehicleZ); // meters
@@ -69,7 +68,7 @@ RegisterCommand('taxi', async () => {
     });
 
     await utils.Delay(500);
-  }
+  } while (!utils.hasVehicleArrivedAtDestination(vehicle, [waypointX, waypointY, waypointZ]) && IsPedSittingInVehicle(player, vehicle) && IsPedSittingInVehicle(driver, vehicle))
 
   if (!IsPedSittingInVehicle(player, vehicle)) {
     utils.infoMsg('Journey ended early - you left the vehicle');
@@ -85,12 +84,16 @@ RegisterCommand('taxi', async () => {
   const vehicleHeading: number = GetEntityHeading(vehicle);
   TaskVehiclePark(driver, vehicle, waypointX, waypointY, waypointZ, vehicleHeading, 0, 20, true);
 
-  while (!IsVehicleStopped(vehicle)) await utils.Delay(50);
+  do {
+    await utils.Delay(50);
+  } while (!IsVehicleStopped(vehicle));
 
   console.log('Player leaving vehicle');
   TaskLeaveVehicle(player, vehicle, 0);
 
-  while (!IsPedSittingInVehicle(player, vehicle)) await utils.Delay(500);
+  do {
+    await utils.Delay(500);
+  } while (!IsPedSittingInVehicle(player, vehicle));
 
   console.log('Setting Vehicle and Driver as no longer needed');
   SetVehicleAsNoLongerNeeded(vehicle);

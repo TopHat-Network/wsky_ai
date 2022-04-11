@@ -1,1 +1,1 @@
-require('./taxi.ts');
+import './taxi';
