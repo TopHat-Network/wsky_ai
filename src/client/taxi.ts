@@ -13,6 +13,7 @@ const drivingStyle: number = 787245; // https://vespura.com/fivem/drivingstyle/
 const maximumSpeed: number = 22; // meters per second
 
 RegisterCommand('taxi', async () => {
+  console.log('step 1');
   let estimatedArrivalInMinutes: number = 0;
 
   const player: number = PlayerPedId();
@@ -20,6 +21,8 @@ RegisterCommand('taxi', async () => {
     utils.errorMsg('Player not found');
     return;
   } // player not found
+
+  console.log('step 2');
 
   const [ x, y, z ] = GetEntityCoords(player, true);
 
@@ -29,17 +32,27 @@ RegisterCommand('taxi', async () => {
     return;
   } // no waypoint found
 
+  console.log('step 3');
+
   const [waypointX, waypointY] = GetBlipInfoIdCoord(waypointBlip);
   const waypointZ = GetHeightmapBottomZForPosition(waypointX, waypointY);
 
+  console.log('step 4');
+
   const [ vehicle, driver ] = await utils.generateVehicle(vehicleHash, [x, y, z], GetEntityHeading(player), driverPedModels[Math.floor(Math.random() * driverPedModels.length)]);
+
+  console.log('step 5');
 
   const playerSeat: number = GetVehicleModelNumberOfSeats(vehicleHash) - 2; // Get the last available seat, minus the driver seat.
 
   SetPedIntoVehicle(player, vehicle, playerSeat);
   TaskVehicleDriveToCoordLongrange(driver, vehicle, waypointX, waypointY, waypointZ, maximumSpeed, drivingStyle, 0);
 
+  console.log('step 6');
+
   while (!utils.hasVehicleArrivedAtDestination(vehicle, [ waypointX, waypointY, waypointZ ]) && IsPedSittingInVehicle(player, vehicle) && IsPedSittingInVehicle(driver, vehicle)) {
+
+    console.log('step 7');
     
     const vehicleSpeed: number = Math.max(maximumSpeed * 0.5, GetEntitySpeed(vehicle)); // meters per second
     const [vehicleX, vehicleY, vehicleZ] = GetEntityCoords(vehicle, true);

@@ -39,29 +39,38 @@ SetRelationshipBetweenGroups(0, GetHashKey('WSKY_TAXI_DRIVER'), GetHashKey('PLAY
 SetRelationshipBetweenGroups(0, GetHashKey('PLAYER'), GetHashKey('WSKY_TAXI_DRIVER'));
 
 export async function generateVehicle(vehicleModel: string, position: [x: number, y: number, z: number], heading: number, pedModel?: string) {
+  console.log('step 1');
   const [ x, y, z ] = position;
   
   // Load the vehicle model, and wait until it's loaded.
   RequestModel(vehicleModel);
+  console.log('step 2');
   while (!HasModelLoaded(vehicleModel)) await Delay(500);
+  console.log('step 3');
 
   // If a ped model is specified, load it.
   if (pedModel) {
     RequestModel(pedModel);
+    console.log('step 3.1');
     while (!HasModelLoaded(pedModel)) await Delay(500);
+    console.log('step 3.2');
   }
 
+  console.log('step 4');
   // Create the vehicle.
   const vehicle = CreateVehicle(GetHashKey(vehicleModel), x, y, z, heading || 0.0, true, true);
 
   let driver: number = null;
 
+  console.log('step 5');
   // If a ped model is specified, create the ped.
   if (pedModel) {
+    console.log('step 5.1');
     driver = CreatePedInsideVehicle(vehicle, 4, pedModel, -1, true, true);
     SetPedRelationshipGroupHash(driver, GetHashKey('WSKY_TAXI_DRIVER'));
 
     TaskSetBlockingOfNonTemporaryEvents(driver, true); // Prevent the ped from fleeing. (doesn't really work...)
+    console.log('step 5.2');
   }
 
   return driver ? [ vehicle, driver ] : [ vehicle ];
