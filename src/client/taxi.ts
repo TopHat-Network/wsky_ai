@@ -32,7 +32,7 @@ RegisterCommand('taxi', async () => {
   const [waypointX, waypointY] = GetBlipInfoIdCoord(waypointBlip);
   const waypointZ = GetHeightmapBottomZForPosition(waypointX, waypointY);
 
-  const [ vehicle, driver ] = await utils.generateVehicle(vehicleHash, [waypointX, waypointY, waypointZ], GetEntityHeading(player), driverPedModels[Math.floor(Math.random() * driverPedModels.length)]);
+  const [ vehicle, driver ] = await utils.generateVehicle(vehicleHash, [x, y, z], GetEntityHeading(player), driverPedModels[Math.floor(Math.random() * driverPedModels.length)]);
 
   const playerSeat: number = GetVehicleModelNumberOfSeats(vehicleHash) - 2; // Get the last available seat, minus the driver seat.
 
