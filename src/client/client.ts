@@ -1,3 +1,3 @@
-require('./utils.ts');
+import './utils';
 
 require('./taxi.ts');
