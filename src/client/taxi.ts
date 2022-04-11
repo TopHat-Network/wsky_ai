@@ -50,52 +50,52 @@ RegisterCommand('taxi', async () => {
 
   console.log('step 6');
 
-  do {
-    console.log('step 7');
+  // do {
+  //   console.log('step 7');
 
-    const vehicleSpeed: number = Math.max(maximumSpeed * 0.5, GetEntitySpeed(vehicle)); // meters per second
-    const [vehicleX, vehicleY, vehicleZ] = GetEntityCoords(vehicle, true);
-    const distanceRemaining: number = CalculateTravelDistanceBetweenPoints(waypointX, waypointY, waypointZ, vehicleX, vehicleY, vehicleZ); // meters
+  //   const vehicleSpeed: number = Math.max(maximumSpeed * 0.5, GetEntitySpeed(vehicle)); // meters per second
+  //   const [vehicleX, vehicleY, vehicleZ] = GetEntityCoords(vehicle, true);
+  //   const distanceRemaining: number = CalculateTravelDistanceBetweenPoints(waypointX, waypointY, waypointZ, vehicleX, vehicleY, vehicleZ); // meters
 
-    const timeRemainingInSeconds: number = (distanceRemaining / vehicleSpeed);
-    estimatedArrivalInMinutes = timeRemainingInSeconds / 60;
+  //   const timeRemainingInSeconds: number = (distanceRemaining / vehicleSpeed);
+  //   estimatedArrivalInMinutes = timeRemainingInSeconds / 60;
 
-    console.log({
-      vehicleSpeed,
-      distanceRemaining,
-      timeRemainingInSeconds,
-      estimatedArrivalInMinutes
-    });
+  //   console.log({
+  //     vehicleSpeed,
+  //     distanceRemaining,
+  //     timeRemainingInSeconds,
+  //     estimatedArrivalInMinutes
+  //   });
 
-    await utils.Delay(500);
-  } while (!utils.hasVehicleArrivedAtDestination(vehicle, [waypointX, waypointY, waypointZ]) && IsPedSittingInVehicle(player, vehicle) && IsPedSittingInVehicle(driver, vehicle))
+  //   await utils.Delay(500);
+  // } while (!utils.hasVehicleArrivedAtDestination(vehicle, [waypointX, waypointY, waypointZ]) && IsPedSittingInVehicle(player, vehicle) && IsPedSittingInVehicle(driver, vehicle))
 
-  if (!IsPedSittingInVehicle(player, vehicle)) {
-    utils.infoMsg('Journey ended early - you left the vehicle');
-    SetVehicleAsNoLongerNeeded(vehicle);
-    SetPedAsNoLongerNeeded(driver);
-    return;
-  }
+  // if (!IsPedSittingInVehicle(player, vehicle)) {
+  //   utils.infoMsg('Journey ended early - you left the vehicle');
+  //   SetVehicleAsNoLongerNeeded(vehicle);
+  //   SetPedAsNoLongerNeeded(driver);
+  //   return;
+  // }
 
-  const location: string = utils.getLocationFromCoords(waypointX, waypointY, waypointZ);
-  utils.successMsg(`You have arrived at ${location}.`);
+  // const location: string = utils.getLocationFromCoords(waypointX, waypointY, waypointZ);
+  // utils.successMsg(`You have arrived at ${location}.`);
 
-  console.log('parking vehicle');
-  const vehicleHeading: number = GetEntityHeading(vehicle);
-  TaskVehiclePark(driver, vehicle, waypointX, waypointY, waypointZ, vehicleHeading, 0, 20, true);
+  // console.log('parking vehicle');
+  // const vehicleHeading: number = GetEntityHeading(vehicle);
+  // TaskVehiclePark(driver, vehicle, waypointX, waypointY, waypointZ, vehicleHeading, 0, 20, true);
 
-  do {
-    await utils.Delay(50);
-  } while (!IsVehicleStopped(vehicle));
+  // do {
+  //   await utils.Delay(50);
+  // } while (!IsVehicleStopped(vehicle));
 
-  console.log('Player leaving vehicle');
-  TaskLeaveVehicle(player, vehicle, 0);
+  // console.log('Player leaving vehicle');
+  // TaskLeaveVehicle(player, vehicle, 0);
 
-  do {
-    await utils.Delay(500);
-  } while (!IsPedSittingInVehicle(player, vehicle));
+  // do {
+  //   await utils.Delay(500);
+  // } while (!IsPedSittingInVehicle(player, vehicle));
 
-  console.log('Setting Vehicle and Driver as no longer needed');
-  SetVehicleAsNoLongerNeeded(vehicle);
-  SetPedAsNoLongerNeeded(driver);
+  // console.log('Setting Vehicle and Driver as no longer needed');
+  // SetVehicleAsNoLongerNeeded(vehicle);
+  // SetPedAsNoLongerNeeded(driver);
 }, false);
