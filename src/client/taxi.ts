@@ -39,7 +39,7 @@ RegisterCommand('taxi', async () => {
 
   console.log('step 4');
 
-  const [ vehicle, driver ] = await utils.generateVehicle(vehicleHash, [x, y, z], GetEntityHeading(player), driverPedModels[Math.floor(Math.random() * driverPedModels.length)]);
+  const [vehicle, driver] = await utils.generateVehicle('TAXI', [x, y, z] as [x: number, y: number, z: number], 0, 'a_m_m_fatlatin_01');
 
   console.log('step 5');
 
