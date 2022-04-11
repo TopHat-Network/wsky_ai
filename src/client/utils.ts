@@ -1,25 +1,33 @@
-const Delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-const errorMsg = (msg: string) => emit('chat:addMessage', {
-  args: [
-    'Error',
-    msg
-  ],
-  color: [255, 0, 0]
-});
-const infoMsg = (msg: string) => emit('chat:addMessage', {
-  args: [
-    'Info',
-    msg
-  ],
-  color: [0, 255, 255]
-});
-const successMsg = (msg: string) => emit('chat:addMessage', {
-  args: [
-    'Success',
-    msg
-  ],
-  color: [0, 255, 0]
-});
+export function Delay (ms: number) {
+  new Promise(resolve => setTimeout(resolve, ms));
+}
+export function errorMsg (msg: string) {
+  emit('chat:addMessage', {
+    args: [
+      'Error',
+      msg
+    ],
+    color: [255, 0, 0]
+  });
+}
+export function infoMsg (msg: string) {
+  emit('chat:addMessage', {
+    args: [
+      'Info',
+      msg
+    ],
+    color: [0, 255, 255]
+  });
+}
+export function successMsg (msg: string) {
+  emit('chat:addMessage', {
+    args: [
+      'Success',
+      msg
+    ],
+    color: [0, 255, 0]
+  });
+}
 
 const positionVariance: number = 30; // meters
 
@@ -30,7 +38,7 @@ AddRelationshipGroup('WSKY_TAXI_DRIVER');
 SetRelationshipBetweenGroups(0, GetHashKey('WSKY_TAXI_DRIVER'), GetHashKey('PLAYER'));
 SetRelationshipBetweenGroups(0, GetHashKey('PLAYER'), GetHashKey('WSKY_TAXI_DRIVER'));
 
-async function generateVehicle(vehicleModel: string, position: [x: number, y: number, z: number], heading: number, pedModel?: string) {
+export async function generateVehicle(vehicleModel: string, position: [x: number, y: number, z: number], heading: number, pedModel?: string) {
   const [ x, y, z ] = position;
   
   // Load the vehicle model, and wait until it's loaded.
@@ -59,20 +67,20 @@ async function generateVehicle(vehicleModel: string, position: [x: number, y: nu
   return driver ? [ vehicle, driver ] : [ vehicle ];
 }
 
-function getDistance(location1: [x: number, y: number, z: number], location2: [x: number, y: number, z: number]) {
+export function getDistance(location1: [x: number, y: number, z: number], location2: [x: number, y: number, z: number]) {
   const [ x1, y1, z1 ] = location1;
   const [ x2, y2, z2 ] = location2;
 
   return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2) + Math.pow(z1 - z2, 2));
 }
 
-function hasVehicleArrivedAtDestination(vehicle: number, destination: [x: number, y: number, z: number]) {
+export function hasVehicleArrivedAtDestination(vehicle: number, destination: [x: number, y: number, z: number]) {
   const vehiclePos = GetEntityCoords(vehicle, true) as [x: number, y: number, z: number];
   const distance = getDistance(vehiclePos, destination);
   return distance <= positionVariance;
 }
 
-function getLocationFromCoords(x: number, y: number, z: number) {
+export function getLocationFromCoords(x: number, y: number, z: number) {
   const zoneId: string = GetNameOfZone(x, y, z);
   const zoneName: string = zoneId ? GetLabelText(zoneId) : null;
 

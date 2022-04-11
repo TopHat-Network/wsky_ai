@@ -1,3 +1,5 @@
+import * as utils from './utils';
+
 const driverPedModels: string[] = [
   'a_m_m_fatlatin_01',
   'a_m_m_socenlat_01',
@@ -15,7 +17,7 @@ RegisterCommand('taxi', async () => {
 
   const player: number = PlayerPedId();
   if (!player) {
-    errorMsg('Player not found');
+    utils.errorMsg('Player not found');
     return;
   } // player not found
 
@@ -23,21 +25,21 @@ RegisterCommand('taxi', async () => {
 
   const waypointBlip: number = GetFirstBlipInfoId(8);
   if (!waypointBlip) {
-    errorMsg('No waypoint found');
+    utils.errorMsg('No waypoint found');
     return;
   } // no waypoint found
 
   const [waypointX, waypointY] = GetBlipInfoIdCoord(waypointBlip);
   const waypointZ = GetHeightmapBottomZForPosition(waypointX, waypointY);
 
-  const [ vehicle, driver ] = await generateVehicle(vehicleHash, [waypointX, waypointY, waypointZ], GetEntityHeading(player), driverPedModels[Math.floor(Math.random() * driverPedModels.length)]);
+  const [ vehicle, driver ] = await utils.generateVehicle(vehicleHash, [waypointX, waypointY, waypointZ], GetEntityHeading(player), driverPedModels[Math.floor(Math.random() * driverPedModels.length)]);
 
   const playerSeat: number = GetVehicleModelNumberOfSeats(vehicleHash) - 2; // Get the last available seat, minus the driver seat.
 
   SetPedIntoVehicle(player, vehicle, playerSeat);
   TaskVehicleDriveToCoordLongrange(driver, vehicle, waypointX, waypointY, waypointZ, maximumSpeed, drivingStyle, 0);
 
-  while (!hasVehicleArrivedAtDestination(vehicle, [ waypointX, waypointY, waypointZ ]) && IsPedSittingInVehicle(player, vehicle) && IsPedSittingInVehicle(driver, vehicle)) {
+  while (!utils.hasVehicleArrivedAtDestination(vehicle, [ waypointX, waypointY, waypointZ ]) && IsPedSittingInVehicle(player, vehicle) && IsPedSittingInVehicle(driver, vehicle)) {
     
     const vehicleSpeed: number = Math.max(maximumSpeed * 0.5, GetEntitySpeed(vehicle)); // meters per second
     const [vehicleX, vehicleY, vehicleZ] = GetEntityCoords(vehicle, true);
@@ -53,29 +55,29 @@ RegisterCommand('taxi', async () => {
       estimatedArrivalInMinutes
     });
 
-    await Delay(500);
+    await utils.Delay(500);
   }
 
   if (!IsPedSittingInVehicle(player, vehicle)) {
-    infoMsg('Journey ended early - you left the vehicle');
+    utils.infoMsg('Journey ended early - you left the vehicle');
     SetVehicleAsNoLongerNeeded(vehicle);
     SetPedAsNoLongerNeeded(driver);
     return;
   }
 
-  const location: string = getLocationFromCoords(waypointX, waypointY, waypointZ);
-  successMsg(`You have arrived at ${location}.`);
+  const location: string = utils.getLocationFromCoords(waypointX, waypointY, waypointZ);
+  utils.successMsg(`You have arrived at ${location}.`);
 
   console.log('parking vehicle');
   const vehicleHeading: number = GetEntityHeading(vehicle);
   TaskVehiclePark(driver, vehicle, waypointX, waypointY, waypointZ, vehicleHeading, 0, 20, true);
 
-  while (!IsVehicleStopped(vehicle)) await Delay(50);
+  while (!IsVehicleStopped(vehicle)) await utils.Delay(50);
 
   console.log('Player leaving vehicle');
   TaskLeaveVehicle(player, vehicle, 0);
 
-  while (!IsPedSittingInVehicle(player, vehicle)) await Delay(500);
+  while (!IsPedSittingInVehicle(player, vehicle)) await utils.Delay(500);
 
   console.log('Setting Vehicle and Driver as no longer needed');
   SetVehicleAsNoLongerNeeded(vehicle);
