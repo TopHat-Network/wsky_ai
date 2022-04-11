@@ -5,7 +5,4 @@ author 'WhiskeeDev <dev@whiskee.me>'
 description 'A simple addon to test AI'
 version '1.0.0'
 
-client_scripts {
-  'scripts/client/utils.ts',
-  'scripts/client/taxi.ts'
-}
+client_script 'dist/client/*.client.js'

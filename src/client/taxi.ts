@@ -19,7 +19,7 @@ RegisterCommand('taxi', async () => {
     return;
   } // player not found
 
-  const [ x, y, z ] = GetEntityCoords(player);
+  const [ x, y, z ] = GetEntityCoords(player, true);
 
   const waypointBlip: number = GetFirstBlipInfoId(8);
   if (!waypointBlip) {
@@ -39,8 +39,8 @@ RegisterCommand('taxi', async () => {
 
   while (!hasVehicleArrivedAtDestination(vehicle, [ waypointX, waypointY, waypointZ ]) && IsPedSittingInVehicle(player, vehicle) && IsPedSittingInVehicle(driver, vehicle)) {
     
-    const vehicleSpeed: number = Math.max(maxSpeed * 0.5, GetEntitySpeed(vehicle)); // meters per second
-    const [vehicleX, vehicleY, vehicleZ] = GetEntityCoords(vehicle);
+    const vehicleSpeed: number = Math.max(maximumSpeed * 0.5, GetEntitySpeed(vehicle)); // meters per second
+    const [vehicleX, vehicleY, vehicleZ] = GetEntityCoords(vehicle, true);
     const distanceRemaining: number = CalculateTravelDistanceBetweenPoints(waypointX, waypointY, waypointZ, vehicleX, vehicleY, vehicleZ); // meters
 
     const timeRemainingInSeconds: number = (distanceRemaining / vehicleSpeed);
@@ -80,4 +80,4 @@ RegisterCommand('taxi', async () => {
   console.log('Setting Vehicle and Driver as no longer needed');
   SetVehicleAsNoLongerNeeded(vehicle);
   SetPedAsNoLongerNeeded(driver);
-})
+}, false);

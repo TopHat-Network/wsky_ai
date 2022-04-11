@@ -67,9 +67,8 @@ function getDistance(location1: [x: number, y: number, z: number], location2: [x
 }
 
 function hasVehicleArrivedAtDestination(vehicle: number, destination: [x: number, y: number, z: number]) {
-  const [vehicleX, vehicleY, vehicleZ] = GetEntityCoords(vehicle);
-  const [destinationX, destinationY, destinationZ] = destination;
-  const distance = getDistance({ x: vehicleX, y: vehicleY, z: vehicleZ }, { x: destinationX, y: destinationY, z: destinationZ });
+  const vehiclePos = GetEntityCoords(vehicle, true) as [x: number, y: number, z: number];
+  const distance = getDistance(vehiclePos, destination);
   return distance <= positionVariance;
 }
 
@@ -77,7 +76,7 @@ function getLocationFromCoords(x: number, y: number, z: number) {
   const zoneId: string = GetNameOfZone(x, y, z);
   const zoneName: string = zoneId ? GetLabelText(zoneId) : null;
 
-  const [streetNameHash]: string = GetStreetNameAtCoord(x, y, z);
+  const [streetNameHash] = GetStreetNameAtCoord(x, y, z);
   const streetName: string = GetStreetNameFromHashKey(streetNameHash);
 
   let location: string = 'your destination';
