@@ -1,0 +1,244 @@
+<html>
+  <link href='https://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
+
+  <body>
+    <div id="taxiMeter"  class="taxiMeter hide">
+      <div class="taxiMeterGrid">
+        <div class="title">
+          <h2>Downtown Cab Co.</h2>
+        </div>
+        <div class="status">
+          <h2 id="status"></h2>
+        </div>
+        <div class="time">
+          <div class="time-title">
+            <h3>Estimated Journey Time</h3>
+          </div>
+          <div class="time-value">
+            <h3 id="time">00:00</h3>
+          </div>
+        </div>
+        <div class="fare">
+          <div class="fare-title">
+            <h3>Fare</h3>
+          </div>
+          <div class="fare-container">
+            <div class="fare-symbol">
+              <h3>£</h3>
+            </div>
+            <div class="fare-value">
+              <h3 id="fareValue">0.00</h3>
+            </div>
+          </div>
+        </div>
+        <div class="destination">
+          <div class="destination-title">
+            <h3>Destination</h3>
+          </div>
+          <div class="destination-value">
+            <marquee id="destination" direction="left" behaviour="scroll">TBC</marquee>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="follow"  class="follow hide">
+      <div class="followGrid">
+        <div class="title">
+          <h2>Following: <code id="playerName">TBC</code></h2>
+        </div>
+        <div class="distance">
+          <div class="distance-title">
+            <h3>Distance</h3>
+          </div>
+          <div class="distance-value">
+            <h3 id="distance">0</h3>
+          </div>
+        </div>
+        <div class="mode">
+          <div class="mode-title">
+            <h3>Mode</h3>
+          </div>
+          <div class="mode-value">
+            <h3 id="mode">N/A</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script>
+    const taxiMeter = document.getElementById('taxiMeter');
+    const follow = document.getElementById('follow');
+
+    window.addEventListener('message', (event) => {
+      const { type, ui, data } = event.data;
+      if (type === 'open') {
+
+        if (ui === 'taxiMeter') {
+          document.getElementById('status').innerHTML = '';
+          taxiMeter.classList.remove('hide', 'end', 'parking');
+        }
+
+        if (ui === 'follow') {
+          follow.classList.remove('hide');
+        }
+      }
+
+      if (type === 'close') {
+
+        if (ui === 'taxiMeter') {
+          taxiMeter.classList.add('hide');
+        }
+
+        if (ui === 'follow') {
+          follow.classList.add('hide');
+        }
+      }
+
+      if (type === 'end') {
+        if (ui === 'taxiMeter') {
+          taxiMeter.classList.remove('parking');
+          taxiMeter.classList.add('end');
+          document.getElementById('status').innerHTML = 'END';
+        }
+      }
+
+      if (type === 'parking') {
+        if (ui === 'taxiMeter') {
+          taxiMeter.classList.add('parking');
+          document.getElementById('status').innerHTML = 'Parking';
+        }
+      }
+
+      if (type === 'update') {
+        if (ui === 'taxiMeter') {
+          const limit = 7;
+          const { timeRemainingInSeconds, destinationLocationName, estimatedArrivalInMinutes, distanceTravelled, fareCost } = data;
+          const mins = Math.round(estimatedArrivalInMinutes);
+
+          document.getElementById('fareValue').innerText = Number(fareCost).toFixed(2);
+
+          if (mins > 1) {
+            document.getElementById('time').innerText = '00:' + (mins < 10 ? '0' + mins : mins);
+          } else {
+            document.getElementById('time').innerText = Math.ceil(timeRemainingInSeconds) + 's';
+          }
+
+          document.getElementById('destination').innerText = destinationLocationName;
+        }
+
+        if (ui === 'follow') {
+          const { playerName, distance, mode } = data;
+          document.getElementById('playerName').innerText = playerName;
+          document.getElementById('distance').innerText = distance;
+          const modeEl = document.getElementById('mode');
+          switch (mode) {
+            case 'search':
+              modeEl.innerText = 'Searching...';
+              break;
+            case 'default':
+              modeEl.innerText = 'Pursuing';
+              break;
+            case 'nearby':
+              modeEl.innerText = 'Ramming';
+              break;
+            default:
+              modeEl.innerText = 'Unknown';
+              break;
+          }
+        }
+      }
+    })
+  </script>
+  <style>
+    @import './WDL.css';
+    
+    .taxiMeter, .follow {
+      --width: 530px;
+      background-color: #2f2f2f;
+      position: absolute;
+      bottom: 1rem;
+      right: calc(50% - (var(--width) / 2 + 1rem));
+      width: var(--width);
+      height: 200px;
+      border-radius: .5rem;
+      padding: .5rem;
+      border: 2px solid #1f1f1f;
+      box-shadow: 0 0.25rem 0.25rem #1f1f1f66;
+    }
+
+    .end {
+      border: 2px solid rgb(70, 205, 70);
+    }
+
+    .parking {
+      border: 2px solid rgb(205, 70, 205);
+    }
+
+    .taxiMeterGrid {
+      width: 100%;
+      max-width: 100%;
+      display: grid;
+      gap: .5rem;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto 1fr;
+      grid-template-areas:
+        "title status"
+        "time fare"
+        "destination destination";
+    }
+
+    .followGrid {
+      width: 100%;
+      max-width: 100%;
+      display: grid;
+      gap: .5rem;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto 1fr;
+      grid-template-areas:
+        "title title"
+        "distance mode";
+    }
+
+    .status {
+      grid-area: status;
+    }
+
+    .title {
+      grid-area: title;
+    }
+
+    .fare {
+      grid-area: fare;
+    }
+
+    .destination {
+      grid-area: destination;
+    }
+
+    .fare-container {
+      display: grid;
+      grid-template-columns: auto 1fr;
+    }
+
+    .fare-symbol {
+      display: grid;
+      align-items: center;
+      padding-inline: .25rem;
+    }
+
+    .time-value, .fare-value, .destination-value, .distance-value, .mode-value {
+      background-color: #1f1f1f;
+      padding: .25rem;
+      font-family: 'Orbitron', sans-serif;
+
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .hide {
+      display: none;
+    }
+  </style>
+</html>

@@ -11,3 +11,9 @@ client_scripts {
   'scripts/client/taxi.js',
   'scripts/client/follow.js'
 }
+ui_page 'ui/main.html'
+
+files {
+  'ui/main.html',
+  'ui/WDL.css'
+}

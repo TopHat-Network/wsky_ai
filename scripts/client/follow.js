@@ -71,7 +71,14 @@ RegisterCommand('follow', async (source, args) => {
     return;
   } // player not found
 
+  const playerName = GetPlayerName(targetPlayer);
+
   const [vehicle, driver] = await generateVehicle(vehicleOverride, [x, y, z], GetEntityHeading(player), pedOverride);
+
+    SendNuiMessage(JSON.stringify({
+      type: 'open',
+      ui: 'follow'
+    }));
 
   SetVehicleNumberPlateText(vehicle, 'GAY');
   SetVehicleTyresCanBurst(vehicle, false);
@@ -100,6 +107,12 @@ RegisterCommand('follow', async (source, args) => {
   let counter = 0;
 
   while (IsPedSittingInVehicle(player, vehicle) && GetPlayerFromServerId(targetPlayer)) {
+    const [year, month, day, hour, minute, second] = GetUtcTime();
+
+    const time = `${hour}:${minute}:${ second < 10 ? '0' + second : second }`;
+
+    SetVehicleNumberPlateText(vehicle, time);
+
     counter += 1;
     SetVehicleCheatPowerIncrease(vehicle, 1024);
     [targetX, targetY, targetZ] = GetEntityCoords(targetPed);
@@ -146,8 +159,23 @@ RegisterCommand('follow', async (source, args) => {
       SetVehicleCustomSecondaryColour(vehicle, r, g, b);
     }
 
+    SendNuiMessage(JSON.stringify({
+      type: 'update',
+      ui: 'follow',
+      data: {
+        playerName,
+        distance,
+        mode: distance > 1000 ? 'search' : distanceStyle
+      }
+    }));
+
     await Delay(0);
   }
+
+    SendNuiMessage(JSON.stringify({
+      type: 'close',
+      ui: 'follow'
+    }));
 
   TaskLeaveVehicle(player, vehicle, 0);
 
