@@ -15,6 +15,7 @@ RegisterCommand('follow', async (source, args) => {
 
   let vehicleOverride = 'DOMINATOR';
   let pedOverride = 'player_one';
+  let seatOverride = null;
 
   switch (mode) {
     case 'cop':
@@ -53,6 +54,11 @@ RegisterCommand('follow', async (source, args) => {
       pedOverride = 'player_one';
       vehicleOverride = 'MARSHALL';
       break;
+    case 'halftrack':
+      pedOverride = 'player_one';
+      vehicleOverride = 'HALFTRACK';
+      seatOverride = 1;
+      break;
   }
 
   console.log(args, mode, pedOverride, vehicleOverride);
@@ -85,7 +91,7 @@ RegisterCommand('follow', async (source, args) => {
 
   ModifyVehicleTopSpeed(vehicle, 600);
 
-  SetPedIntoVehicle(player, vehicle, 0);
+  SetPedIntoVehicle(player, vehicle, seatOverride || 0);
   SetVehicleEngineOn(vehicle, true, true, false);
 
   SetVehicleSiren(vehicle, true);
